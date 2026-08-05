@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plataforma moderna de busca e agregação de imóveis à venda em Cascavel/PR. Filtre por regiões (Centro, Norte, Sul, Leste, Oeste), bairros, preços e vagas.">
+  <title>Imóveis Cascavel/PR - Buscador & Agregador Imobiliário</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navbar -->
+  <header class="navbar-header">
+    <div class="container navbar-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <i data-lucide="building-2"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Imóveis <strong>Cascavel</strong></span>
+          <span class="brand-tagline"><i data-lucide="map-pin"></i> Cascavel / PR</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="scrape-status-badge" id="scrapeStatusBadge">
+          <span class="status-dot"></span>
+          <span id="scrapeStatusText">Base Atualizada</span>
+        </div>
+
+        <button id="btnScrapeUpdate" class="btn btn-primary btn-update">
+          <i data-lucide="refresh-cw" id="refreshIcon"></i>
+          <span>Atualizar Imóveis</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner / Hero Counter -->
+  <section class="hero-stats">
+    <div class="container stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i data-lucide="home"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="statTotal">0</span>
+          <span class="stat-label">Total de Imóveis</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-new" id="cardStatNew">
+        <div class="stat-icon"><i data-lucide="sparkles"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="statNovos">0</span>
+          <span class="stat-label">Novos nesta Atualização</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i data-lucide="compass"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="statRegioes">5</span>
+          <span class="stat-label">Regiões Mapeadas</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i data-lucide="globe"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" style="font-size:0.95rem;">Portais + 22 Imobiliárias</span>
+          <span class="stat-label">VivaReal, OLX, Zap + Locais</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout (Sidebar Filters + Results) -->
+  <main class="container main-layout">
+    
+    <!-- Sidebar Filters -->
+    <aside class="sidebar-filters">
+      <div class="filter-card">
+        <div class="filter-header">
+          <h3><i data-lucide="sliders"></i> Filtros de Busca</h3>
+          <button id="btnResetFilters" class="btn-text">Limpar</button>
+        </div>
+
+        <!-- Somente Novos Toggle -->
+        <div class="filter-group highlight-toggle-group">
+          <label class="toggle-switch-label" for="toggleOnlyNew">
+            <div class="toggle-text">
+              <span class="toggle-title"><i data-lucide="sparkles"></i> Somente Novidades</span>
+              <span class="toggle-desc">Ver apenas imóveis da última atualização</span>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="toggleOnlyNew">
+              <span class="slider"></span>
+            </div>
+          </label>
+        </div>
+
+        <!-- Palavra-chave -->
+        <div class="filter-group">
+          <label for="inputKeyword"><i data-lucide="search"></i> Buscar por Palavra-Chave</label>
+          <div class="input-with-icon">
+            <input type="text" id="inputKeyword" placeholder="Ex: Sobrado, Suíte, Piscina, FAG...">
+          </div>
+        </div>
+
+        <!-- Regiões de Cascavel -->
+        <div class="filter-group">
+          <label><i data-lucide="map"></i> Região de Cascavel</label>
+          <div class="region-pills" id="regionPillsContainer">
+            <button class="pill active" data-region="TODAS">Todas</button>
+            <button class="pill" data-region="Central">Central</button>
+            <button class="pill" data-region="Oeste">Oeste</button>
+            <button class="pill" data-region="Leste">Leste</button>
+            <button class="pill" data-region="Norte">Norte</button>
+            <button class="pill" data-region="Sul">Sul</button>
+          </div>
+        </div>
+
+        <!-- Bairro Dropdown -->
+        <div class="filter-group">
+          <label for="selectBairro"><i data-lucide="map-pin"></i> Bairro Específico</label>
+          <select id="selectBairro">
+            <option value="">Todos os Bairros</option>
+          </select>
+        </div>
+
+        <!-- Tipo de Imóvel -->
+        <div class="filter-group">
+          <label for="selectTipo"><i data-lucide="building"></i> Tipo de Imóvel</label>
+          <select id="selectTipo">
+            <option value="">Todos os Tipos</option>
+            <option value="Apartamento">Apartamento</option>
+            <option value="Casa">Casa</option>
+            <option value="Sobrado">Sobrado</option>
+            <option value="Terreno">Terreno</option>
+          </select>
+        </div>
+
+        <!-- Faixa de Preço -->
+        <div class="filter-group">
+          <label><i data-lucide="dollar-sign"></i> Faixa de Valor (R$)</label>
+          <div class="range-inputs">
+            <input type="number" id="inputMinPrice" placeholder="Mínimo" step="50000">
+            <span>até</span>
+            <input type="number" id="inputMaxPrice" placeholder="Máximo" step="50000">
+          </div>
+        </div>
+
+        <!-- Quantidade de Quartos -->
+        <div class="filter-group">
+          <label><i data-lucide="bed"></i> Mínimo de Quartos</label>
+          <div class="counter-selector" data-filter="quartos">
+            <button class="btn-count active" data-value="0">Qualquer</button>
+            <button class="btn-count" data-value="1">1+</button>
+            <button class="btn-count" data-value="2">2+</button>
+            <button class="btn-count" data-value="3">3+</button>
+            <button class="btn-count" data-value="4">4+</button>
+          </div>
+        </div>
+
+        <!-- Vagas de Garagem -->
+        <div class="filter-group">
+          <label><i data-lucide="car"></i> Vagas de Garagem</label>
+          <div class="counter-selector" data-filter="vagas">
+            <button class="btn-count active" data-value="0">Qualquer</button>
+            <button class="btn-count" data-value="1">1+</button>
+            <button class="btn-count" data-value="2">2+</button>
+            <button class="btn-count" data-value="3">3+</button>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- Listings Container -->
+    <section class="listings-section">
+      <!-- Toolbar controls -->
+      <div class="listings-toolbar">
+        <div class="results-count">
+          <h2 id="resultsHeading">Imóveis Disponíveis</h2>
+          <span id="resultsCountBadge" class="badge">0 encontrados</span>
+        </div>
+
+        <div class="toolbar-sort">
+          <label for="selectSort">Ordenar por:</label>
+          <select id="selectSort">
+            <option value="recentes">Mais Recentes / Novos Primeiro</option>
+            <option value="menor_preco">Menor Preço</option>
+            <option value="maior_preco">Maior Preço</option>
+            <option value="area">Maior Área Util</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Banner Informativo -->
+      <div class="info-banner" id="infoBanner">
+        <div class="info-banner-icon"><i data-lucide="info"></i></div>
+        <div class="info-banner-content">
+          <strong>Links Diretos Oficiais:</strong>
+          Ao clicar no botão ou card de qualquer imóvel, você será redirecionado <strong>diretamente para a página oficial do anúncio</strong> no site da imobiliária responsável ou portal original.
+        </div>
+        <button class="info-banner-close" onclick="document.getElementById('infoBanner').style.display='none'">&times;</button>
+      </div>
+
+      <!-- Scrape Progress Alert (oculto por padrão) -->
+      <div id="scrapeProgressBar" class="scrape-progress-box hidden">
+        <div class="progress-info">
+          <span class="progress-title"><i data-lucide="loader-2" class="spin"></i> Varrendo VivaReal, Chave na Mão e Imobiliárias de Cascavel...</span>
+          <span class="progress-percent" id="progressPercentText">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFillBar"></div>
+        </div>
+      </div>
+
+      <!-- Property Grid -->
+      <div class="property-grid" id="propertyGrid">
+        <!-- JS renderiza os cards aqui -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon"><i data-lucide="search-x"></i></div>
+        <h3>Nenhum imóvel encontrado</h3>
+        <p>Tente ajustar ou limpar os filtros para visualizar mais resultados em Cascavel/PR.</p>
+        <button id="btnResetFiltersEmpty" class="btn btn-secondary">Limpar Todos os Filtros</button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Modal de Detalhes do Imóvel -->
+  <div class="modal-backdrop hidden" id="modalBackdrop">
+    <div class="modal-content">
+      <button class="modal-close" id="btnModalClose">&times;</button>
+      <div class="modal-body" id="modalBody">
+        <!-- Renderizado via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="cascavel_regions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

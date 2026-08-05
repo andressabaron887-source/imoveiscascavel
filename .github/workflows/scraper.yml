@@ -1,0 +1,39 @@
+name: Atualizar Imóveis Cascavel
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Executa diariamente às 08:00 UTC
+  workflow_dispatch: # Permite rodar manualmente pelo GitHub
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar Playwright e navegadores
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install chromium
+
+      - name: Executar Scraper de Portais
+        run: python scraper_real.py
+
+      - name: Executar Scraper de Imobiliárias Locais
+        run: python scraper_imobiliarias.py
+
+      - name: Commit e Push das atualizações
+        run: |
+          git config --global user.name "GitHub Action Scraper"
+          git config --global user.email "actions@github.com"
+          git add data/imoveis.json
+          git commit -m "bot: Atualização automática da base de imóveis [skip ci]" || echo "Sem mudanças"
+          git push
