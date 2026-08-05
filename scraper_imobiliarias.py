@@ -154,11 +154,32 @@ async def scrape_agency(ctx, agency: dict) -> list:
                     for (let i = 0; i < 8; i++) {
                         node = node.parentElement;
                         if (!node) break;
+                        
+                        // Busca em tags <img>
                         const imgs = Array.from(node.querySelectorAll('img'));
                         for (const img of imgs) {
-                            const src = img.src || img.dataset.src || img.dataset.original || img.getAttribute('data-lazy') || '';
+                            let src = img.src || img.dataset.src || img.dataset.original || img.getAttribute('data-lazy') || '';
+                            if (src && !src.startsWith('http') && src.startsWith('/')) {
+                                src = window.location.origin + src;
+                            }
                             if (src && src.startsWith('http') && !src.includes('.svg') && !src.includes('icon') && !src.includes('logo') && !src.includes('avatar') && !src.includes('favorite')) {
                                 return src;
+                            }
+                        }
+                        
+                        // Busca em divs com background-image
+                        const bgElements = Array.from(node.querySelectorAll('[style*="background-image"], [style*="url("]'));
+                        for (const bgEl of bgElements) {
+                            const bgImg = bgEl.style.backgroundImage || bgEl.style.background || '';
+                            const match = bgImg.match(/url\(['"]?([^'"]+)['"]?\)/);
+                            if (match && match[1]) {
+                                let src = match[1];
+                                if (!src.startsWith('http') && src.startsWith('/')) {
+                                    src = window.location.origin + src;
+                                }
+                                if (src.startsWith('http') && !src.includes('.svg') && !src.includes('icon') && !src.includes('logo')) {
+                                    return src;
+                                }
                             }
                         }
                     }
