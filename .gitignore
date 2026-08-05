@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Debug e temporários
+debug_*.png
+debug_*.py
+imobiliarias_test.json
+*.log
+
+# Antigravity / Gemini logs
+.system_generated/
+
+# OS
+.DS_Store
+Thumbs.db
