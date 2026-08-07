@@ -286,7 +286,7 @@ async def scrape_vivareal(ctx) -> list:
                 pass
 
         # Scroll para carregar listagens
-        for _ in range(12):
+        for _ in range(6):
             await page.evaluate("window.scrollBy(0, window.innerHeight * 0.8)")
             await page.wait_for_timeout(1200)
 
@@ -295,7 +295,7 @@ async def scrape_vivareal(ctx) -> list:
         log.info("VivaReal: %d links de imóveis encontrados", len(listing_links))
 
         seen_hrefs = set()
-        for link_el in listing_links[:250]:
+        for link_el in listing_links[:100]:
             try:
                 href = await link_el.get_attribute("href") or ""
                 if not href or href in seen_hrefs:
@@ -378,7 +378,7 @@ async def scrape_olx(ctx) -> list:
                 pass
 
         # Scroll
-        for _ in range(10):
+        for _ in range(5):
             await page.evaluate("window.scrollBy(0, window.innerHeight)")
             await page.wait_for_timeout(1000)
 
@@ -390,7 +390,7 @@ async def scrape_olx(ctx) -> list:
         log.info("OLX: %d links de imóveis em Cascavel", len(listing_links))
 
         seen_hrefs = set()
-        for link_el in listing_links[:250]:
+        for link_el in listing_links[:100]:
             try:
                 href = await link_el.get_attribute("href") or ""
                 if not href or href in seen_hrefs:
@@ -470,7 +470,7 @@ async def scrape_zap(ctx) -> list:
             except Exception:
                 pass
 
-        for _ in range(12):
+        for _ in range(6):
             await page.evaluate("window.scrollBy(0, window.innerHeight * 0.8)")
             await page.wait_for_timeout(1200)
 
@@ -478,7 +478,7 @@ async def scrape_zap(ctx) -> list:
         log.info("ZapImóveis: %d links de imóveis encontrados", len(listing_links))
 
         seen_hrefs = set()
-        for link_el in listing_links[:250]:
+        for link_el in listing_links[:100]:
             try:
                 href = await link_el.get_attribute("href") or ""
                 if not href or href in seen_hrefs:
