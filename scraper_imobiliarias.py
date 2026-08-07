@@ -114,7 +114,7 @@ async def scrape_agency(ctx, agency: dict) -> list:
         await page.wait_for_timeout(3000)
         
         # Scroll para acionar carregamento lazy de cards
-        for _ in range(12):
+        for _ in range(6):
             await page.evaluate("window.scrollBy(0, window.innerHeight * 0.8)")
             await page.wait_for_timeout(800)
             
@@ -123,7 +123,7 @@ async def scrape_agency(ctx, agency: dict) -> list:
         log.info("[%s] %d links de detalhe encontrados", name, len(links))
         
         seen_urls = set()
-        for link in links[:200]:
+        for link in links[:80]:
             try:
                 href = await link.get_attribute("href") or ""
                 if not href or href in seen_urls or href == "/venda" or href.endswith("/imoveis/a-venda"):
